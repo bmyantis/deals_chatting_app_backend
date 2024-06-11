@@ -1,0 +1,151 @@
+{
+	"info": {
+		"_postman_id": "dd553059-7d45-492b-bc19-f59e3c0d4d46",
+		"name": "deals",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "28000890"
+	},
+	"item": [
+		{
+			"name": "signup",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"testuser32\",\r\n    \"email\": \"testuser32@example.com\",\r\n    \"password\": \"securepassword1\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8090/v1/user/signup"
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"testuser19\",\r\n    \"password\": \"securepassword1\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8090/v1/user/login"
+			},
+			"response": []
+		},
+		{
+			"name": "update profile",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJqYWc2UjE1ME1aLVlWSGRpcTN2aEtzLTdkMklEb0pGSDh3am5GT1dhamdnIn0.eyJleHAiOjE3MTgwODczODUsImlhdCI6MTcxODA4NzMyNSwianRpIjoiNGVkYjZkODgtYjk3Ny00YzlmLTk2YWItZmY4NGU1Y2FkZTIxIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9tYXN0ZXIiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiNDBhNmMwNTgtOTM4ZC00NmQ1LWI0ZmEtNzAwNjgyYWY5NTMxIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiZGVhbHMiLCJzZXNzaW9uX3N0YXRlIjoiMjAyOWI5NjctZGU5ZS00MzkxLTljNGMtZmMwOTJlZjgyNzRjIiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwOi8vbG9jYWxob3N0OjgwODAiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtbWFzdGVyIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJzaWQiOiIyMDI5Yjk2Ny1kZTllLTQzOTEtOWM0Yy1mYzA5MmVmODI3NGMiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInByZWZlcnJlZF91c2VybmFtZSI6InRlc3R1c2VyMTkiLCJlbWFpbCI6InRlc3R1c2VyMTlAZXhhbXBsZS5jb20ifQ.iY-rVbRTtUOor-FYzTyoobg4VcW2fwiRnjsOqcBZz6U08Qa1GsoPGNYZSn3PMe19MYdv7QabzwV4QzUdLcABfXn68syE_8ZqeJ2X84PJt1IcDQjwD1H2rJUtGSqkswtYSCX56O2f4D7QvpK02U6jfLxxH3q7WNck9JyO36Uofc2FEvL4N9vIiNmFDCPGh1OcT_9SFvMhUIjLPjHlzb7xyCko2xsJK6pvfVtJP2uIaXVaAAQKzqcxTEHz2YvMH3-mJ_d6ktZ-WKstkWLaIHgVfIA0W_BYFzIK3ej-y5SJYIV_-YeEeJLc4_WCfuAf6gUhy-3hC2NX86JMhdewgLcy4w"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullname\": \"user 19\",\r\n    \"DOB\": \"1980-01-02T15:04:05Z\",\r\n    \"religion\": \"catholic\",\r\n    \"gender\": \"female\",\r\n    \"country\": \"Indonesia\",\r\n    \"city\": \"medan\",\r\n    \"picture\": \"\",\r\n    \"created_at\": \"2024-06-10T15:31:24.807866104Z\",\r\n    \"updated_at\": \"2024-06-10T15:31:24.807866104Z\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8090/v1/user/40a6c058-938d-46d5-b4fa-700682af9531/profile"
+			},
+			"response": []
+		},
+		{
+			"name": "swipe",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJqYWc2UjE1ME1aLVlWSGRpcTN2aEtzLTdkMklEb0pGSDh3am5GT1dhamdnIn0.eyJleHAiOjE3MTgwNjI1MzgsImlhdCI6MTcxODA2MjQ3OCwianRpIjoiYTYxYzE4OWYtZDE4OS00ZTVhLTkwM2ItZjFlNTcxNjI5YTFmIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9tYXN0ZXIiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiNDBhNmMwNTgtOTM4ZC00NmQ1LWI0ZmEtNzAwNjgyYWY5NTMxIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiZGVhbHMiLCJzZXNzaW9uX3N0YXRlIjoiZjg3NzczZWItMTA3OC00OWFjLWE2ZDgtMjU1NDY2MWI3MzVhIiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwOi8vbG9jYWxob3N0OjgwODAiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtbWFzdGVyIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJzaWQiOiJmODc3NzNlYi0xMDc4LTQ5YWMtYTZkOC0yNTU0NjYxYjczNWEiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInByZWZlcnJlZF91c2VybmFtZSI6InRlc3R1c2VyMTkiLCJlbWFpbCI6InRlc3R1c2VyMTlAZXhhbXBsZS5jb20ifQ.4x6B_3tHCNplKJDRIiuz8gPvhfaO7ieSmtAY426qZHtKl-FBCRe_VSDB5EWGWUji_BRd5Qsngv0SViKbn8T5GloX7XiX-r-f9in1snJqGQH5-g3N3ub2I_0ef34my8V3tmT5PfzZOzz3jR9anNP5dMZE_jjesPht4-aH09sHm6huAtDweU6q8eJZvCYan4MH0Nnrxj_ZpgC-iCbDfdwniG2yS7eV1ivkTqj0pT4VUBJ7h0s8QU4OAJ33bElxmI0wT5EnUVVKXxqaiDsAMNKNrji3zv3XUL1zHqJMFsX4042hFQKg1Fgv3Sqq_UNWS_T6d4H75kO3rBbftfojCaLA8A"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"swiped_user_id\": \"507130a8-633c-4fe0-8e78-ab3bbd1cea26\",\r\n        \"is_liked\": true\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8090/v1/swipe/"
+			},
+			"response": []
+		},
+		{
+			"name": "users",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJqYWc2UjE1ME1aLVlWSGRpcTN2aEtzLTdkMklEb0pGSDh3am5GT1dhamdnIn0.eyJleHAiOjE3MTgwODkzNDYsImlhdCI6MTcxODA4OTI4NiwianRpIjoiNGZiNjEwMjgtMjJiMS00NDFiLWJlMTctODA2NTRhMTYzYzMxIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9tYXN0ZXIiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiNDBhNmMwNTgtOTM4ZC00NmQ1LWI0ZmEtNzAwNjgyYWY5NTMxIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiZGVhbHMiLCJzZXNzaW9uX3N0YXRlIjoiYjNhN2U1ZTMtNDNlZC00Y2I2LThlODktNjQ0ODc5NGZhY2MzIiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwOi8vbG9jYWxob3N0OjgwODAiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtbWFzdGVyIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJzaWQiOiJiM2E3ZTVlMy00M2VkLTRjYjYtOGU4OS02NDQ4Nzk0ZmFjYzMiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInByZWZlcnJlZF91c2VybmFtZSI6InRlc3R1c2VyMTkiLCJlbWFpbCI6InRlc3R1c2VyMTlAZXhhbXBsZS5jb20ifQ.ieC3fjSZL6L8_5K7dApm7YER065RWg3oBVWAXJ9zgD7HibN7039v222nJnTAfH1BbiPjGiG9VRPKLR_48sVFroY_hvObWbz9qwfdO0facbm9Y5Yg6Qf-j4_wQ9ruOSz2O0ZXAkie9HfKTopeY565ISbWxE0csPQ-UpDC3dP6-V7UYSSAunaeZZJcBiHHsp9UCWoLPOyBh4uyTKTXgSQBxMncFe-QG_5xb16i_YRypMAPkNn0cPjnUQd8efS2SWNk8sTLRQxjdn_qf_yPtZEC2LhJTKqcUL2MmrtZ84zSJAn8k-P3FgRxvy3RUwy8PaQryBhFIJ7k98TVMZJMxldtpQ"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"fullname\": \"\",\r\n        \"DOB\": \"1994-01-02T15:04:05Z\",\r\n        \"religion\": \"catholic\",\r\n        \"gender\": \"female\",\r\n        \"country\": \"Indonesia\",\r\n        \"city\": \"medan\",\r\n        \"picture\": \"\",\r\n        \"created_at\": \"2024-06-10T15:31:24.807866104Z\",\r\n        \"updated_at\": \"2024-06-10T15:31:24.807866104Z\"\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8090/v1/user/"
+			},
+			"response": []
+		},
+		{
+			"name": "preferences",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJqYWc2UjE1ME1aLVlWSGRpcTN2aEtzLTdkMklEb0pGSDh3am5GT1dhamdnIn0.eyJleHAiOjE3MTgwODYzODIsImlhdCI6MTcxODA4NjMyMiwianRpIjoiNmMwMzdhZGItODgyYy00MzVmLTlmOTYtZTZjMTk1ZjZkOTU4IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9tYXN0ZXIiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiMGNjMGRkMTktYjIwNS00NzJmLWFmOWUtZWUzMmM1NjljNmM0IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiZGVhbHMiLCJzZXNzaW9uX3N0YXRlIjoiMTNhYzFkYWQtZDg5NC00NGM3LTk1ODUtZGFlMDczZDlhMDg5IiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwOi8vbG9jYWxob3N0OjgwODAiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtbWFzdGVyIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJzaWQiOiIxM2FjMWRhZC1kODk0LTQ0YzctOTU4NS1kYWUwNzNkOWEwODkiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInByZWZlcnJlZF91c2VybmFtZSI6InRlc3R1c2VyMjAiLCJlbWFpbCI6InRlc3R1c2VyMjBAZXhhbXBsZS5jb20ifQ.tyWBQS1a4PFhp77Yyop_uoPYp2qxn0PvcDW-_oG9AEJGF30ZsWM07VVh3NF6Vp85MIpEE4qIUBEONR4wbSquokSdfCupYDSxCfydQj8fhvfeHYHA7b_rLorn196qc64LHEv37iuo7nWvYXdhW6bYGYObBNn645faO3eW5yr7qzp4fvUq7emLC6XT78yjUrSK_uZYqpelBIx0iCno9FaN_kOuaYGJpGN4psDRzQDwdEG2Z5m50mZu65uGTSiPsjmwD5bYvXszXannkYNtXi9l7M9wtTwA8VR8p-FVxjOV2vGY_YEHIB2Wqx9M-9uL2jbyte4i1QBDGMCveAU50BCDaQ"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"min_age\": 20,\r\n        \"max_age\": 30,\r\n        \"religion\": \"catholic\",\r\n        \"gender\": \"male\",\r\n        \"country\": \"Indonesia\",\r\n        \"city\": \"medan\",\r\n        \"picture\": \"\",\r\n        \"created_at\": \"2024-06-10T15:31:24.807866104Z\",\r\n        \"updated_at\": \"2024-06-10T15:31:24.807866104Z\"\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8090/v1/user/40a6c058-938d-46d5-b4fa-700682af9531/preferences"
+			},
+			"response": []
+		}
+	]
+}
