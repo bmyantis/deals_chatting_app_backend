@@ -140,7 +140,7 @@ func (ctrl *UserControllerImpl) CreateOrUpdateProfile(c *gin.Context) {
 
 	profileResponse := data.ProfileResponse{
 		BaseResponse: data.BaseResponse{
-			ProcessStatus: "success",
+			ProcessStatus: constant.PROCESS_STATUS_SUCCESS,
 			TxnRef:        uuid.New().String(),
 		},
 		Payload: data.Profile{
@@ -188,7 +188,7 @@ func (ctrl *UserControllerImpl) CreateOrUpdatePreferences(c *gin.Context) {
 
 	preferencesResponse := data.PreferencesResponse{
 		BaseResponse: data.BaseResponse{
-			ProcessStatus: "success",
+			ProcessStatus: constant.PROCESS_STATUS_SUCCESS,
 			TxnRef:        uuid.New().String(),
 		},
 		Payload: data.Preferences{
@@ -250,7 +250,7 @@ func (ctrl *UserControllerImpl) FindAll(c *gin.Context) {
         }
 
         // Populate userResponse from user's data
-        userResponse := data.UserResponse{
+        userResponse := data.SimpleUserResponse{
             ID:        user.ID.String(),
             Username:  user.Username,
         }
@@ -269,8 +269,9 @@ func (ctrl *UserControllerImpl) FindAll(c *gin.Context) {
     // Prepare UserResponseList
     response := data.UserResponseList{
         BaseResponse: data.BaseResponse{
-            // Populate base response fields if necessary
-        },
+			ProcessStatus: constant.PROCESS_STATUS_SUCCESS,
+			TxnRef:        uuid.New().String(),
+		},
         Payload:      userResponses,
         TotalRecords: int64(len(userResponses)),
         Limit:        int32(limit),

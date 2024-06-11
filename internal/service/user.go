@@ -37,7 +37,7 @@ func NewUserService(userRepo repository.UserRepository, keycloak *gocloak.GoCloa
 
 
 func (s *UserServiceImpl) Create(req *data.UserRequest, ctx context.Context) (*model.User, error) {
-	ctx, span := otel.Tracer("").Start(ctx, "UserService_CreateUser")
+	childCtx, span := otel.Tracer("").Start(ctx, "UserService_CreateUser")
 	defer span.End()
 	
 	// keycloak_client_id := viper.GetString("KEYCLOAK_CLIENT_ID")
@@ -47,7 +47,7 @@ func (s *UserServiceImpl) Create(req *data.UserRequest, ctx context.Context) (*m
 	keycloakRealm := viper.GetString("KEYCLOAK_REALM")
 	keycloakClientSecret := viper.GetString("KEYCLOAK_CLIENT_SECRET")
 
-	token, err := s.Keycloak.LoginClient(ctx, keycloakClientId, keycloakClientSecret, keycloakRealm)
+	token, err := s.Keycloak.LoginClient(childCtx, keycloakClientId, keycloakClientSecret, keycloakRealm)
 	
 	if err != nil {
 		zap.L().Sugar().Errorf("Failed to authenticate: %s", err)
@@ -62,7 +62,7 @@ func (s *UserServiceImpl) Create(req *data.UserRequest, ctx context.Context) (*m
 		// RequiredActions: &[]string{"VERIFY_EMAIL", "UPDATE_PASSWORD"},
 	}
 
-	createdUserID, err := s.Keycloak.CreateUser(ctx, token.AccessToken, keycloakRealm, newUser)
+	createdUserID, err := s.Keycloak.CreateUser(childCtx, token.AccessToken, keycloakRealm, newUser)
 	fmt.Println("kjsdvjbsdvjkbds")
 	fmt.Println(err)
 	if err != nil {
@@ -71,7 +71,7 @@ func (s *UserServiceImpl) Create(req *data.UserRequest, ctx context.Context) (*m
 	}
 
 	// create user password
-	err = s.Keycloak.SetPassword(ctx, token.AccessToken, createdUserID, keycloakRealm, req.Password, false)
+	err = s.Keycloak.SetPassword(childCtx, token.AccessToken, createdUserID, keycloakRealm, req.Password, false)
 	if err != nil {
 		zap.L().Sugar().Errorf("Failed to set user password: %s", err)
 		return nil, err
@@ -88,9 +88,9 @@ func (s *UserServiceImpl) Create(req *data.UserRequest, ctx context.Context) (*m
 		IsVerified: false,
 	}
 
-	savedUser, err := s.UserRepository.Save(ctx, user)
+	savedUser, err := s.UserRepository.Save(childCtx, user)
 	if err != nil {
-		if err := s.Keycloak.DeleteUser(ctx, token.AccessToken, viper.GetString("KEYCLOAK_REALM"), createdUserID); err != nil {
+		if err := s.Keycloak.DeleteUser(childCtx, token.AccessToken, viper.GetString("KEYCLOAK_REALM"), createdUserID); err != nil {
 			zap.L().Sugar().Errorf("Failed to delete user: %s", err)
 		}
 		return nil, err
@@ -102,10 +102,10 @@ func (s *UserServiceImpl) Create(req *data.UserRequest, ctx context.Context) (*m
 }
 
 func (s *UserServiceImpl) Login(req *data.UserLoginRequest, ctx context.Context) (*string, error) {
-	ctx, span := otel.Tracer("").Start(ctx, "UserService_Login")
+	childCtx, span := otel.Tracer("").Start(ctx, "UserService_Login")
 	defer span.End()
 
-	user, err := s.UserRepository.FindByUsername(ctx, req.Username)
+	user, err := s.UserRepository.FindByUsername(childCtx, req.Username)
 	if err != nil {
 		zap.L().Sugar().Errorf("User doesn't Exist: %s", err)
 		return nil, err
@@ -121,7 +121,7 @@ func (s *UserServiceImpl) Login(req *data.UserLoginRequest, ctx context.Context)
 
 	fmt.Println("viper.GetStringggg", viper.GetString("KEYCLOAK_REALM"))
 
-	token, err := s.Keycloak.Login(ctx, keycloakClientId, keycloakClientSecret, keycloakRealm, req.Username, req.Password)
+	token, err := s.Keycloak.Login(childCtx, keycloakClientId, keycloakClientSecret, keycloakRealm, req.Username, req.Password)
 	fmt.Println("erororoorloggg", err)
 	if err != nil {
 		zap.L().Sugar().Errorf("Failed to authenticate: %s", err)
@@ -133,6 +133,9 @@ func (s *UserServiceImpl) Login(req *data.UserLoginRequest, ctx context.Context)
 
 
 func (s *UserServiceImpl) CreateOrUpdateProfile(req *data.CreateOrUpdateProfileRequest, userID uuid.UUID, ctx context.Context) (*model.Profile, error) {
+	childCtx, span := otel.Tracer("").Start(ctx, "UserService_CreateOrUpdateProfileRequest")
+	defer span.End()
+
 	// Map ProfileUpdateRequest to model.Profile
 	profile := model.Profile{
 		FullName: req.FullName,
@@ -143,7 +146,7 @@ func (s *UserServiceImpl) CreateOrUpdateProfile(req *data.CreateOrUpdateProfileR
 		City:     req.City,
 		Picture:  req.Picture,
 	}
-	savedProfile, err := s.UserRepository.CreateOrUpdateProfile(ctx, userID, profile)
+	savedProfile, err := s.UserRepository.CreateOrUpdateProfile(childCtx, userID, profile)
 	if err != nil {
 		zap.L().Sugar().Errorf("Failed to CreateOrUpdateProfile: %s", err)
 		return nil, err
@@ -154,6 +157,9 @@ func (s *UserServiceImpl) CreateOrUpdateProfile(req *data.CreateOrUpdateProfileR
 
 
 func (s *UserServiceImpl) CreateOrUpdatePreferences(req *data.CreateOrUpdatePreferencesRequest, userID uuid.UUID, ctx context.Context) (*model.Preferences, error) {
+	childCtx, span := otel.Tracer("").Start(ctx, "UserService_CreateOrUpdatePreferences")
+	defer span.End()
+
 	// Map CreateOrUpdatePreferencesRequest to model.Preferences
 	preferences := model.Preferences{
 		MinAge:		req.MinAge,
@@ -163,7 +169,7 @@ func (s *UserServiceImpl) CreateOrUpdatePreferences(req *data.CreateOrUpdatePref
 		Country:	req.Country,
 		City:		req.City,
 	}
-	savedPreferences, err := s.UserRepository.CreateOrUpdatePreferences(ctx, userID, preferences)
+	savedPreferences, err := s.UserRepository.CreateOrUpdatePreferences(childCtx, userID, preferences)
 	if err != nil {
 		zap.L().Sugar().Errorf("Failed to CreateOrUpdatePreferences: %s", err)
 		return nil, err
@@ -173,7 +179,10 @@ func (s *UserServiceImpl) CreateOrUpdatePreferences(req *data.CreateOrUpdatePref
 }
 
 func (s *UserServiceImpl) FindAll(ctx context.Context, userID uuid.UUID) ([]model.User, error) {
-	users, err := s.UserRepository.FindAll(ctx, userID)
+	childCtx, span := otel.Tracer("").Start(ctx, "UserService_FindAll")
+	defer span.End()
+
+	users, err := s.UserRepository.FindAll(childCtx, userID)
 	if err != nil {
 		zap.L().Sugar().Errorf("Failed to FindAll users: %s", err)
 		return nil, err
@@ -185,7 +194,10 @@ func (s *UserServiceImpl) FindAll(ctx context.Context, userID uuid.UUID) ([]mode
 
 
 func (s *UserServiceImpl) GetProfileByUserID(ctx context.Context, userID uuid.UUID) (*model.Profile, error) {
-	profile, err := s.UserRepository.GetProfileByUserID(ctx, userID)
+	childCtx, span := otel.Tracer("").Start(ctx, "UserService_GetProfileByUserID")
+	defer span.End()
+
+	profile, err := s.UserRepository.GetProfileByUserID(childCtx, userID)
 	if err != nil {
 		zap.L().Sugar().Errorf("Failed to GetProfileByUserID: %s", err)
 		return nil, err

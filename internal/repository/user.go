@@ -137,17 +137,17 @@ func (r *UserRepositoryImpl) FindAll(ctx context.Context, userID uuid.UUID) ([]m
 		return nil, err // Other errors
 	}
 
-	// Subquery to find all users that the current user has already swiped
+	// Subquery to find users that the current user has already swiped or interacted with
 	subQuery := r.DB.Model(&model.Swipe{}).Select("swiped_user_id").Where("user_id = ?", userID)
 
-	// Subquery to find all users that the current user has already swiped
-	subQuery2 := r.DB.Model(&model.Profile{}).Select("user_id").Where("user_id = ?", userID)
+	// Fetch users that the current user hasn't interacted with yet
+	query := r.DB.WithContext(ctx).Model(&model.User{}).
+		Where("id NOT IN (?)", subQuery).
+		Where("id <> ?", userID). // Exclude the current user
+		Where("is_active = ?", true)
 
-	// Fetch users that the current user hasn't swiped yet, with additional randomization
-	query := r.DB.WithContext(ctx).Where("id NOT IN (?)", subQuery).Where("id IN (?)", subQuery2).Where("id <> ?", userID).Where("is_active = ?", true).Order("RANDOM()")
-
-	if !user.IsVerified {
-		// Limit to 10 users if the current user is verified
+	// If the user is not verified, limit the result to 10 users
+	if user.IsVerified {
 		query = query.Limit(10)
 	}
 

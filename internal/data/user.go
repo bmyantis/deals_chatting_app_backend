@@ -10,6 +10,11 @@ type UserRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
+type SimpleUserResponse struct {
+	ID       	string		`json:"id"`
+	Username	string		`json:"username"`
+}
+
 type UserResponse struct {
 	ID       	string		`json:"id"`
 	Username	string		`json:"username"`
@@ -40,7 +45,7 @@ type UserLoginResponse struct {
 }
 
 type UserDetailResponse struct {
-	User UserResponse `json:"user"`
+	User SimpleUserResponse `json:"user"`
 	Profile Profile `json:"profile"`
 }
 
