@@ -40,9 +40,6 @@ func (s *UserServiceImpl) Create(req *data.UserRequest, ctx context.Context) (*m
 	childCtx, span := otel.Tracer("").Start(ctx, "UserService_CreateUser")
 	defer span.End()
 	
-	// keycloak_client_id := viper.GetString("KEYCLOAK_CLIENT_ID")
-	// keycloakRealm := viper.GetString("KEYCLOAK_REALM")
-	fmt.Println("viper.GetString", viper.GetString("KEYCLOAK_REALM"))
 	keycloakClientId := viper.GetString("KEYCLOAK_CLIENT_ID")
 	keycloakRealm := viper.GetString("KEYCLOAK_REALM")
 	keycloakClientSecret := viper.GetString("KEYCLOAK_CLIENT_SECRET")

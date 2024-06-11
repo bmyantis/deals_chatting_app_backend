@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 	"context"
+	"errors"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -40,67 +41,6 @@ func prepareRequest(c *gin.Context, content interface{}) {
 	jsonbytes, _ := json.Marshal(content)
 	c.Request.Body = io.NopCloser(bytes.NewBuffer(jsonbytes))
 }
-
-// func TestSignup_Success(t *testing.T) {
-// 	ctrl := gomock.NewController(t)
-// 	defer ctrl.Finish()
-
-// 	mockUserService := mockService.NewMockUserService(ctrl)
-
-// 	reqPayload := data.UserRequest{
-// 		Username: "user1",
-// 		Email:    "test1@example.com",
-// 		Password: "password",
-// 	}
-
-// 	resPayload := model.User{
-// 		ID:         profileUUID,
-// 		Username:   "user1",
-// 		Email:      "test1@example.com",
-// 		IsVerified: true,
-// 		CreatedAt:  time.Now(),
-// 		LastLogin:  time.Now(),
-// 	}
-
-// 	exp := data.CreateUserResponse{
-// 		BaseResponse: data.BaseResponse{
-// 			ProcessStatus: constant.PROCESS_STATUS_SUCCESS,
-// 			TxnRef:        "", // To be dynamically set
-// 		},
-// 		Payload: data.UserResponse{
-// 			ID:        resPayload.ID.String(),
-// 			Username:  resPayload.Username,
-// 			Email:     resPayload.Email,
-// 			IsVerified: resPayload.IsVerified,
-// 			CreatedAt: resPayload.CreatedAt,
-// 			LastLogin: resPayload.LastLogin,
-// 			VerifiedAt: resPayload.VerifiedAt,
-// 		},
-// 	}
-
-// 	controller := controller.NewUserController(mockUserService, mockValidator)
-
-// 	gin.SetMode(gin.TestMode)
-// 	req := httptest.NewRequest("POST", "/signup", nil)
-// 	w := httptest.NewRecorder()
-// 	ctx, _ := gin.CreateTestContext(w)
-// 	ctx.Request = req
-
-// 	mockUserService.EXPECT().Create(&reqPayload, gomock.Any()).Return(&resPayload, nil)
-
-// 	prepareRequest(ctx, reqPayload)
-
-// 	controller.Signup(ctx)
-
-// 	res := data.CreateUserResponse{}
-// 	json.Unmarshal(w.Body.Bytes(), &res)
-
-// 	// Dynamically set expected TxnRef to match actual response
-// 	exp.BaseResponse.TxnRef = res.BaseResponse.TxnRef
-
-// 	assert.Equal(t, http.StatusOK, w.Code)
-// 	assert.Equal(t, exp, res)
-// }
 
 func compareTimes(t1, t2 time.Time) bool {
 	return t1.Equal(t2)
@@ -181,6 +121,68 @@ func TestSignup_Success(t *testing.T) {
 	assert.Equal(t, exp.Payload.LastLogin.Format(time.RFC3339), res.Payload.LastLogin.Format(time.RFC3339))
 }
 
+func TestSignup_ValidationError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockUserService := mockService.NewMockUserService(ctrl)
+
+	reqPayload := data.UserRequest{
+		Email:    "test1@example.com",
+		Password: "password",
+	}
+
+	controller := controller.NewUserController(mockUserService, mockValidator)
+
+	gin.SetMode(gin.TestMode)
+	req := httptest.NewRequest("POST", "/signup", nil)
+	w := httptest.NewRecorder()
+	ctx, _ := gin.CreateTestContext(w)
+	ctx.Request = req
+
+	// Set request body
+	reqJSON, _ := json.Marshal(reqPayload)
+	ctx.Request.Body = io.NopCloser(bytes.NewReader(reqJSON))
+
+	controller.Signup(ctx)
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+	// Check if the response contains the validation error message
+	assert.Equal(t, w.Body.String(), "")
+
+}
+
+func TestSignup_ServiceError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockUserService := mockService.NewMockUserService(ctrl)
+
+	reqPayload := data.UserRequest{
+		Username: "username2",
+		Email:    "test2@example.com",
+		Password: "password",
+	}
+
+	gin.SetMode(gin.TestMode)
+	req := httptest.NewRequest("POST", "/swipe", nil)
+	w := httptest.NewRecorder()
+	ctx, _ := gin.CreateTestContext(w)
+	ctx.Request = req
+	
+	// Set request body
+	reqJSON, _ := json.Marshal(reqPayload)
+	ctx.Request.Body = io.NopCloser(bytes.NewReader(reqJSON))
+
+	// Mock the swipe service Create method
+	expectedErrMsg := "service error"
+	mockUserService.EXPECT().Create(&reqPayload, ctx.Request.Context()).Return(nil, errors.New(expectedErrMsg))
+
+	controller := controller.NewUserController(mockUserService, mockValidator)
+	controller.Signup(ctx)
+	assert.Equal(t, http.StatusInternalServerError, w.Code)
+
+}
+
 func TestLogin_Success(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -226,6 +228,36 @@ func TestLogin_Success(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, exp, res)
+}
+
+
+func TestLogin_Failure(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockUserService := mockService.NewMockUserService(ctrl)
+
+	reqPayload := data.UserLoginRequest{
+		Username: "user1",
+		Password: "password",
+	}
+	controller := controller.NewUserController(mockUserService, mockValidator)
+	
+	gin.SetMode(gin.TestMode)
+	req := httptest.NewRequest("POST", "/login", nil)
+	w := httptest.NewRecorder()
+	ctx, _ := gin.CreateTestContext(w)
+	ctx.Request = req
+	
+	prepareRequest(ctx, reqPayload)	
+	
+	expectedErrMsg := "service error"
+
+	mockUserService.EXPECT().Login(&reqPayload, gomock.Any()).Return(nil, errors.New(expectedErrMsg))
+
+	controller.Login(ctx)
+
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
 }
 
 func TestFindAll_Success(t *testing.T) {
