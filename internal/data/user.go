@@ -89,12 +89,12 @@ type ProfileResponse struct {
 }
 // UpdateProfileRequest represents the request payload for updating a user's profile.
 type CreateOrUpdateProfileRequest struct {
-	FullName	string		`json:"fullname"`
-	DOB         time.Time	`json:"dob"`
-	Religion	string		`json:"religion"`
-	Gender		string		`json:"gender"`
-	Country		string		`json:"country"`
-	City		string		`json:"city"`
+	FullName	string		`json:"fullname" binding:"required"`
+	DOB         time.Time	`json:"dob" binding:"required"`
+	Religion	string		`json:"religion" binding:"required"`
+	Gender		string		`json:"gender" binding:"required"`
+	Country		string		`json:"country" binding:"required"`
+	City		string		`json:"city" binding:"required"`
 	Picture		string		`json:"picture"`
 }
 
@@ -118,10 +118,10 @@ type PreferencesResponse struct {
 
 // CreateOrUpdatePreferencesRequest represents the request payload for updating a user's preferences.
 type CreateOrUpdatePreferencesRequest struct {
-	MinAge      int			`json:"min_age"`
-	MaxAge      int			`json:"max_age"`
-	Religion	string		`json:"religion"`
-	Gender		string		`json:"gender"`
-	Country		string		`json:"country"`
-	City		string		`json:"city"`
+	MinAge      int			`json:"min_age" binding:"required"`
+	MaxAge      int			`json:"max_age" binding:"required"`
+	Religion	string		`json:"religion" binding:"required"`
+	Gender		string		`json:"gender" binding:"required"`
+	Country		string		`json:"country" binding:"required"`
+	City		string		`json:"city" binding:"required"`
 }

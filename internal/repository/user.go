@@ -1,12 +1,15 @@
 package repository
 
 import (
+	"time"
 	"context"
 	"deals_chatting_app_backend/internal/model"
 
 	"gorm.io/gorm"
 	
 	"github.com/google/uuid"
+	
+	"github.com/spf13/viper"
 )
 
 type UserRepository interface {
@@ -126,6 +129,8 @@ func (r *UserRepositoryImpl) GetProfileByUserID(ctx context.Context, userID uuid
 
 // FindAll fetches all users that the current user hasn't swiped yet, with additional filtering if the current user is verified
 func (r *UserRepositoryImpl) FindAll(ctx context.Context, userID uuid.UUID) ([]model.User, error) {
+	quota := viper.GetInt("DEFAULT_QUOTA_PERDAY")
+
 	var user model.User
 	var users []model.User
 
@@ -136,19 +141,42 @@ func (r *UserRepositoryImpl) FindAll(ctx context.Context, userID uuid.UUID) ([]m
 		}
 		return nil, err // Other errors
 	}
+	// Fetch the preferences of the current user, if they exist
+	var preferences model.Preferences
+	err := r.DB.WithContext(ctx).Where("user_id = ?", userID).First(&preferences).Error
+	preferencesExist := err == nil && err != gorm.ErrRecordNotFound
 
 	// Subquery to find users that the current user has already swiped or interacted with
-	subQuery := r.DB.Model(&model.Swipe{}).Select("swiped_user_id").Where("user_id = ?", userID)
+	subQuery := r.DB.Model(&model.Swipe{}).Select("swiped_user_id").Preload("profile").Where("user_id = ?", userID)
 
 	// Fetch users that the current user hasn't interacted with yet
 	query := r.DB.WithContext(ctx).Model(&model.User{}).
-		Where("id NOT IN (?)", subQuery).
-		Where("id <> ?", userID). // Exclude the current user
-		Where("is_active = ?", true)
+		Joins("JOIN profiles ON users.id = profiles.user_id").
+		Where("users.id NOT IN (?)", subQuery).
+		Where("users.id <> ?", userID). // Exclude the current user
+		Where("users.is_active = ?", true)
 
-	// If the user is not verified, limit the result to 10 users
+	// Apply age filtering if preferences exist
+	if preferencesExist {
+		// Calculate minimum and maximum birth years based on preferences
+		maxBirthYear := time.Now().Year() - preferences.MinAge
+		minBirthYear := time.Now().Year() - preferences.MaxAge
+		// Calculate the earliest and latest dates of birth corresponding to the age range
+		earliestDOB := time.Date(minBirthYear, time.January, 1, 0, 0, 0, 0, time.UTC)
+		latestDOB := time.Date(maxBirthYear, time.December, 31, 23, 59, 59, 999999999, time.UTC)
+
+		// Filter users based on the calculated date of birth range
+		query = query.Where("profiles.dob <= ?", latestDOB).
+			Where("profiles.dob >= ?", earliestDOB).
+			Where("profiles.gender = ?", preferences.Gender).
+			Where("profiles.religion = ?", preferences.Religion).
+			Where("profiles.city = ?", preferences.City).
+			Where("profiles.country = ?", preferences.Country)
+	}
+
+	// If the user is not verified, limit the result to DEFAULT_QUOTA_LIMIT_PERDAY users
 	if user.IsVerified {
-		query = query.Limit(10)
+		query = query.Limit(int(quota))
 	}
 
 	if err := query.Find(&users).Error; err != nil {
