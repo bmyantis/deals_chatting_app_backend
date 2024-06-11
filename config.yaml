@@ -1,0 +1,11 @@
+http_port: 8090
+pg_host: "postgres"
+pg_port: 5432
+pg_user: "postgres"
+pg_password: "password"
+dbName: "deals"
+autoMigrate: true
+KEYCLOAK_URL: "http://keycloak:8080"
+KEYCLOAK_CLIENT_ID: "deals"
+KEYCLOAK_CLIENT_SECRET: "5UOAC7zxygFkG6Qr6t1dsb5vOTpOHWTv"
+KEYCLOAK_REALM: "master"
